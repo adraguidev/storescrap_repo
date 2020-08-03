@@ -1,6 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
-
+import csv
+import urllib3
+import re
 
 class Scrapper:
     """
@@ -25,11 +27,11 @@ class Scrapper:
         r = requests.get(url, headers=self.headers)
         soup = BeautifulSoup(r.content, 'lxml')
         category_links = []
-        links = {
+        links = [
             e.get('href')
             for e in soup.find_all('a')
             if e.get('href') and f'{contains}' in e.get('href')
-        }
+        ]
         for link in links:
             if sw == 'https':
                 category_links.append(link)
@@ -106,7 +108,12 @@ class Scrapper:
         :param product_list:
         :return:
         """
-        products_info = []
+
+        file = open('./boxscrap.csv', 'w',newline='')
+        writer = csv.writer(file)
+        writer.writerow(['name', 'price', 'description' ,'options', 'link'])
+
+        #products_info = []
         count = 0
         for product in product_list:
             r = requests.get(product, headers=self.headers)
@@ -119,22 +126,23 @@ class Scrapper:
                 'span', class_="price-item price-item--sale").text.strip()
             description = soup.find(
                 'div', class_="product-single__description rte").text.strip()
-            options = soup.find_all(
+            options = soup.find(
                 'select',
                 class_=
                 "single-option-selector single-option-selector-product-template product-form__input"
-            )
+            ).text.strip()
+            writer.writerow([name.encode('utf-8'), price.encode('utf-8'), description.encode('utf-8'), options.encode('utf-8'), product.encode('utf-8')])
 
-
-            product = {
-                'name': name,
-                'price': price,
-                'description': description,
-                'options': options,
-                #'size': size,
-                'link': product
-            }
+            #product = {
+            #    'name': name,
+            #    'price': price,
+            #    'description': description,
+            #    'options': options,
+            #    'size': size,
+            #    'link': product
+            #}
+            
             count += 1
             print(count)
-            products_info.append(product)
-        return products_info
+            #products_info.append(product)
+        return f'Total Products {count}'

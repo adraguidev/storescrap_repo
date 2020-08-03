@@ -18,11 +18,11 @@ products_list = web_scrapping.get_products(pages_per_cat, 'products')
 
 data = web_scrapping.product_data(products_list)
 
-df = pd.DataFrame(data)
+#df = pd.DataFrame(data)
 
-df['name'] = df['name'].str.replace("\n", '-')
-df['description'] = df['description'].str.replace("\n", '-')
+#df['name'] = df['name'].str.replace("\n", '-')
+#df['description'] = df['description'].str.replace("\n", '-')
 #df['color'] = df['color'].str.replace("\n", '-')
 #df['size'] = df['size'].str.replace("\n", '-')
 
-df.to_csv('theboxstore.csv', encoding="utf-8-sig")
+#df.to_csv('theboxstore.csv', encoding="utf-8-sig")
