@@ -3,6 +3,9 @@ from bs4 import BeautifulSoup
 import csv
 import urllib3
 import re
+from datetime import datetime
+
+startTime = datetime.now()
 
 class Scrapper:
     """
@@ -32,14 +35,12 @@ class Scrapper:
             for e in soup.find_all('a')
             if e.get('href') and f'{contains}' in e.get('href')
         ]
-        for link in links:
+        for link in links[0:2]:
             if sw == 'https':
                 category_links.append(link)
             elif sw == '/':
                 category_links.append(self.baseurl + link)
-                # print(re.match(r"(ftp|http|https)://.*\.(pe|com|net)", self.url))
-                # category_links.append(a+_)
-                # print(category_links)
+
             else:
                 category_links.append(url + link)
 
@@ -67,7 +68,7 @@ class Scrapper:
         :return:
         """
         pages_links = []
-        for category in categories:
+        for category in categories[0:2]:
             for x in range(1, 200):
                 r = requests.get(f"{category}?page={x}", headers=self.headers)
                 soup = BeautifulSoup(r.content, 'lxml')
@@ -86,7 +87,7 @@ class Scrapper:
         """
         category_links = []
         product_links = []
-        for x in links:
+        for x in links[0:2]:
             print(x)
             r = requests.get(f"{x}", headers=self.headers)
             soup = BeautifulSoup(r.content, 'lxml')
@@ -95,7 +96,7 @@ class Scrapper:
                 if e.get('href') and contains in e.get('href')
             ]
             category_links += links
-        for x in category_links:
+        for x in category_links[0:2]:
             if x.startswith('https'):
                 product_links.append(x)
             else:
@@ -108,19 +109,20 @@ class Scrapper:
         :param product_list:
         :return:
         """
-
+        print(f'Se extraeran: {len(product_list)} articulos')
         file = open('./boxscrap.csv', 'w',newline='')
         writer = csv.writer(file)
         writer.writerow(['name', 'price', 'description' ,'options', 'link'])
 
-        #products_info = []
+
         count = 0
-        for product in product_list:
+
+        for product in product_list[0:len(product_list)+1]:
             r = requests.get(product, headers=self.headers)
             soup = BeautifulSoup(r.content, 'lxml')
             print(f'Extrayendo data de : {product}')
             name = soup.find('h1',
-                             class_='product-single__title').string.strip()
+                             class_='product-single__title').text.strip()
             print(f'Nombre de Producto: {name}')
             price = soup.find(
                 'span', class_="price-item price-item--sale").text.strip()
@@ -131,18 +133,10 @@ class Scrapper:
                 class_=
                 "single-option-selector single-option-selector-product-template product-form__input"
             ).text.strip()
-            writer.writerow([name.encode('utf-8'), price.encode('utf-8'), description.encode('utf-8'), options.encode('utf-8'), product.encode('utf-8')])
-
-            #product = {
-            #    'name': name,
-            #    'price': price,
-            #    'description': description,
-            #    'options': options,
-            #    'size': size,
-            #    'link': product
-            #}
+            writer.writerow([name.replace("\n", ' '), price.replace("\n", ' '), description.replace("\n", ' '), options.replace("\n", ' '), product.replace("\n", ' ')])
             
             count += 1
-            print(count)
-            #products_info.append(product)
-        return f'Total Products {count}'
+            percentage = (count/len(product_list))*100
+            print("Porcentaje: " + "{:12.2f}".format(percentage))
+            
+        return print(f'Productos totales: {count}, Tiempo total: '+ str(datetime.now() - startTime))
