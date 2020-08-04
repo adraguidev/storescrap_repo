@@ -35,7 +35,7 @@ class Scrapper:
             for e in soup.find_all('a')
             if e.get('href') and f'{contains}' in e.get('href')
         ]
-        for link in links[0:2]:
+        for link in links:
             if sw == 'https':
                 category_links.append(link)
             elif sw == '/':
@@ -68,7 +68,7 @@ class Scrapper:
         :return:
         """
         pages_links = []
-        for category in categories[0:2]:
+        for category in categories:
             for x in range(1, 200):
                 r = requests.get(f"{category}?page={x}", headers=self.headers)
                 soup = BeautifulSoup(r.content, 'lxml')
@@ -87,7 +87,7 @@ class Scrapper:
         """
         category_links = []
         product_links = []
-        for x in links[0:2]:
+        for x in links:
             print(x)
             r = requests.get(f"{x}", headers=self.headers)
             soup = BeautifulSoup(r.content, 'lxml')
@@ -96,7 +96,7 @@ class Scrapper:
                 if e.get('href') and contains in e.get('href')
             ]
             category_links += links
-        for x in category_links[0:2]:
+        for x in category_links:
             if x.startswith('https'):
                 product_links.append(x)
             else:
