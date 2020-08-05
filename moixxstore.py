@@ -16,22 +16,22 @@ def GET_UA():
                 ]
     return random.choice(uastrings)   
 
-baseurl = "https://thebox.com.pe"
+baseurl = "https://moixxlife.com"
 headers = {'User-Agent': GET_UA()}
-webpage_to_extract = "https://thebox.com.pe"
+webpage_to_extract = "https://moixxlife.com"
 categories_name = "collections"
 subdirectory ="/collections"
 #Can be "http" or "/"
 starts_with = '/'
 #if it is more than one, it has to be a list
-products_tags = ["grid-view-item grid-view-item--sold-out product-card", "grid-view-item product-card"]
+products_tags = ["indiv-product"]
 #--------------------------------------------#
 name_tag = "h1"
-name_class = "product-single__title"
+name_class = "custom-font product-description-header reviews-enabled"
 price_tag = 'span'
-price_class = "price-item price-item--sale"
+price_class = ["js"]
 description_tag = 'div'
-description_class = "product-single__description rte"
+description_class = "product-description-wrapper"
 
 
 web_scrapping = Scrapper(baseurl, headers)

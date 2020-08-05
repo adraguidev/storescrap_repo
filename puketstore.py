@@ -16,22 +16,22 @@ def GET_UA():
                 ]
     return random.choice(uastrings)   
 
-baseurl = "https://thebox.com.pe"
+baseurl = "https://puket.pe"
 headers = {'User-Agent': GET_UA()}
-webpage_to_extract = "https://thebox.com.pe"
+webpage_to_extract = "https://puket.pe"
 categories_name = "collections"
 subdirectory ="/collections"
 #Can be "http" or "/"
 starts_with = '/'
 #if it is more than one, it has to be a list
-products_tags = ["grid-view-item grid-view-item--sold-out product-card", "grid-view-item product-card"]
+products_tags = ["grid-item small--one-half medium--one-fifth large--one-fifth on-sale","grid-item small--one-half medium--one-fifth large--one-fifth"]
 #--------------------------------------------#
 name_tag = "h1"
-name_class = "product-single__title"
+name_class = "h2"
 price_tag = 'span'
-price_class = "price-item price-item--sale"
+price_class = ["visually-hidden"]
 description_tag = 'div'
-description_class = "product-single__description rte"
+description_class = "product-description rte"
 
 
 web_scrapping = Scrapper(baseurl, headers)

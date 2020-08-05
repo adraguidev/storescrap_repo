@@ -16,25 +16,25 @@ def GET_UA():
                 ]
     return random.choice(uastrings)   
 
-baseurl = "https://thebox.com.pe"
+baseurl = "https://tiendanebula.net"
 headers = {'User-Agent': GET_UA()}
-webpage_to_extract = "https://thebox.com.pe"
+webpage_to_extract = "https://tiendanebula.net"
 categories_name = "collections"
 subdirectory ="/collections"
 #Can be "http" or "/"
 starts_with = '/'
 #if it is more than one, it has to be a list
-products_tags = ["grid-view-item grid-view-item--sold-out product-card", "grid-view-item product-card"]
+products_tags = ["grid-item col-6 col-md-4 col-lg-3"]
 #--------------------------------------------#
 name_tag = "h1"
-name_class = "product-single__title"
+name_class = "product-title"
 price_tag = 'span'
-price_class = "price-item price-item--sale"
+price_class = ["price on-sale","price"]
 description_tag = 'div'
-description_class = "product-single__description rte"
+description_class = "tab-content active"
+filename = './nebulastore.csv'
 
-
-web_scrapping = Scrapper(baseurl, headers)
+web_scrapping = Scrapper(baseurl, headers, filename)
 categories = web_scrapping.get_links(webpage_to_extract, categories_name, comp=subdirectory, sw=starts_with)
 pages_per_cat = web_scrapping.link_pages(categories, products_tags)
 

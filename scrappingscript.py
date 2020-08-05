@@ -11,9 +11,11 @@ class Scrapper:
     """
     Clase Scrapper
     """
-    def __init__(self, baseurl, headers):
+    def __init__(self, baseurl, headers,filename):
         self.baseurl = baseurl
         self.headers = headers
+        self.filename = filename
+
 
     # url = url from store
     # comp = ubication of categories, ex = '/collections'
@@ -91,11 +93,13 @@ class Scrapper:
             print(x)
             r = requests.get(f"{x}", headers=self.headers)
             soup = BeautifulSoup(r.content, 'lxml')
-            links = [
+            cat_links = [
                 e.get('href') for e in soup.find_all('a')
                 if e.get('href') and contains in e.get('href')
             ]
-            category_links += links
+            category_links += cat_links
+        category_links = set(category_links)
+        
         for x in category_links:
             if x.startswith('https'):
                 product_links.append(x)
@@ -103,14 +107,14 @@ class Scrapper:
                 product_links.append(self.baseurl + x)
         return product_links
 
-    def product_data(self, product_list):
+    def product_data(self, product_list,name_tag ,name_class ,price_tag ,price_class ,description_tag ,description_class):
         """
 
         :param product_list:
         :return:
         """
         print(f'Se extraeran: {len(product_list)} articulos')
-        file = open('./boxscrap.csv', 'w',newline='')
+        file = open(self.filename, 'w',newline='')
         writer = csv.writer(file)
         writer.writerow(['name', 'price', 'description' ,'options', 'link'])
 
@@ -121,22 +125,25 @@ class Scrapper:
             r = requests.get(product, headers=self.headers)
             soup = BeautifulSoup(r.content, 'lxml')
             print(f'Extrayendo data de : {product}')
-            name = soup.find('h1',
-                             class_='product-single__title').text.strip()
+            name = soup.find(name_tag,
+                             class_=name_class).text.strip()
             print(f'Nombre de Producto: {name}')
-            price = soup.find(
-                'span', class_="price-item price-item--sale").text.strip()
+            if soup.find(price_tag, class_=price_class):
+                price = soup.find(
+                    price_tag, class_=price_class).text.strip()
+            else:
+                price = "Sin información"
             description = soup.find(
-                'div', class_="product-single__description rte").text.strip()
-            options = soup.find(
-                'select',
-                class_=
-                "single-option-selector single-option-selector-product-template product-form__input"
-            ).text.strip()
-            writer.writerow([name.replace("\n", ' '), price.replace("\n", ' '), description.replace("\n", ' '), options.replace("\n", ' '), product.replace("\n", ' ')])
+                description_tag, class_=description_class).text.strip()
+            #options = soup.find(
+            #    'select',
+            #    class_=
+            #    "single-option-selector single-option-selector-product-template product-form__input"
+            #).text.strip()
+            writer.writerow([name.replace("\n", ' '), price.replace("\n", ' '), description.replace("\n", ' '), product.replace("\n", ' ')])
             
             count += 1
             percentage = (count/len(product_list))*100
-            print("Porcentaje: " + "{:12.2f}".format(percentage))
+            print("Porcentaje: " + "{:12.2f}".format(percentage) + "%")
             
         return print(f'Productos totales: {count}, Tiempo total: '+ str(datetime.now() - startTime))
