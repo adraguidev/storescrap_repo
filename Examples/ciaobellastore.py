@@ -1,7 +1,6 @@
 from scrappingscript import Scrapper
 import pandas as pd
 import random
-import re
 
 def GET_UA():
     uastrings = ["Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/537.36",\
@@ -17,23 +16,23 @@ def GET_UA():
                 ]
     return random.choice(uastrings)   
 
-baseurl = "https://www.perubebe.com"
-filename = './perubebe.csv'
+baseurl = "https://ciaobella.pe"
+filename = './ciaobellastore.csv'
 headers = {'User-Agent': GET_UA()}
-webpage_to_extract = "https://www.perubebe.com"
+webpage_to_extract = "https://ciaobella.pe"
 categories_name = "collections"
 subdirectory ="/collections"
 #Can be "http" or "/"
 starts_with = '/'
 #if it is more than one, it has to be a list
-products_tags = ["ba suit-grey-border-primary pb2","pa2 suit-grey-color-primary-dark"]
+products_tags = ["card critical-clear"]
 #--------------------------------------------#
 name_tag = "h1"
-name_class = "f3 fw4 f4-mm lh-title suit-color-secondary helvetica"
+name_class = "product__title h2 text-center"
 price_tag = 'span'
-price_class = ["tc f2 f3-mm suit-color-secondary","tc gray strike f4 f5-mm mb2"]
+price_class = ["product__current-price"]
 description_tag = 'div'
-description_class = "f4 f5-mm fw3 gray lh-copy helvetica mb3"
+description_class = "product__description rte"
 
 web_scrapping = Scrapper(baseurl, headers, filename)
 categories = web_scrapping.get_links(webpage_to_extract, categories_name, comp=subdirectory, sw=starts_with)

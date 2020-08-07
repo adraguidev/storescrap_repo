@@ -35,7 +35,8 @@ class Scrapper:
         links = [
             e.get('href')
             for e in soup.find_all('a')
-            if e.get('href') and f'{contains}' in e.get('href')
+            if e.get('href') and f'{contains}' in e.get('href') 
+            #and f'products' not in e.get('href')
         ]
         for link in links:
             if sw == 'https':
@@ -116,7 +117,7 @@ class Scrapper:
         print(f'Se extraeran: {len(product_list)} articulos')
         file = open(self.filename, 'w',newline='')
         writer = csv.writer(file)
-        writer.writerow(['name', 'price', 'description' ,'options', 'link'])
+        writer.writerow(['name', 'price', 'description', 'link'])
 
 
         count = 0
@@ -125,6 +126,7 @@ class Scrapper:
             r = requests.get(product, headers=self.headers)
             soup = BeautifulSoup(r.content, 'lxml')
             print(f'Extrayendo data de : {product}')
+            #cambiar itemprop por class_
             name = soup.find(name_tag,
                              class_=name_class).text.strip()
             print(f'Nombre de Producto: {name}')
@@ -133,8 +135,11 @@ class Scrapper:
                     price_tag, class_=price_class).text.strip()
             else:
                 price = "Sin información"
-            description = soup.find(
-                description_tag, class_=description_class).text.strip()
+            if soup.find(description_tag, class_=description_class):
+                description = soup.find(
+                    description_tag, class_=description_class).text.strip()
+            else:
+                description = "Sin información"
             #options = soup.find(
             #    'select',
             #    class_=
