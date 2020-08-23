@@ -1,5 +1,4 @@
 from scrappingscript import Scrapper
-import pandas as pd
 import random
 
 def GET_UA():

@@ -1,8 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
 import csv
-import urllib3
-import re
 from datetime import datetime
 
 startTime = datetime.now()
